@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, OneToOne } from "typeorm"
+import { Category } from "./category"
 import { Photo } from "./photo"
 import { User } from "./user"
 
@@ -10,6 +11,9 @@ export class Product {
 
     @OneToMany(() => Photo, (photo) => photo.product)
     photo: Photo[]
+
+    @ManyToOne(() => Category, (category) => category.product)
+    category: Category
 
     @ManyToOne(() => User, (user) => user.product)
     user: User

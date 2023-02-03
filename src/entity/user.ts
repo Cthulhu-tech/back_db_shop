@@ -34,4 +34,7 @@ export class User {
     @Column('boolean')
     verification: boolean
 
+    @Column('char', { length: 255 })
+    token: string
+
 }
