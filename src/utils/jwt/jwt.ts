@@ -12,7 +12,7 @@ export class JwtUtils implements IJwtUtils {
     }
 
     checkCookie(req: Request, res: Response, next: NextFunction) {
-        
+        next()
     }
 
 }
