@@ -2,6 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { Purchase } from "./purchase"
 import { Product } from "./product"
 import { Delayed } from './delayed'
+import { Message } from './message'
+import { Room } from './room'
 
 @Entity()
 export class User {
@@ -17,6 +19,12 @@ export class User {
 
     @OneToMany(() => Delayed, (delayed) => delayed.user, { nullable: true })
     delayed: Delayed[]
+
+    @OneToMany(() => Message, (message) => message.user, { nullable: true })
+    message: Message[]
+
+    @OneToMany(() => Room, (room) => room.user, { nullable: true })
+    room: Room[]
 
     @Column('char', { length: 55 })
     firstName: string
