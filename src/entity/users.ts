@@ -6,7 +6,7 @@ import { Message } from './message'
 import { Room } from './room'
 
 @Entity()
-export class User {
+export class Users {
 
     @PrimaryGeneratedColumn('increment')
     id: number
@@ -47,7 +47,7 @@ export class User {
     @Column('char', { length: 255, nullable: true })
     img: string
 
-    @Column('boolean')
+    @Column('boolean', { default: false })
     verification: boolean
 
     @Column('char', { length: 255, nullable: true })

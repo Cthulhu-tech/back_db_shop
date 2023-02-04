@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 import { Product } from './product'
-import { User } from './user'
+import { Users } from './users'
 
 @Entity()
 export class Purchase {
@@ -11,8 +11,8 @@ export class Purchase {
     @Column('timestamp')
     sale_time: number
 
-    @ManyToOne(() => User, (user) => user.purchase, { nullable: true })
-    user: User
+    @ManyToOne(() => Users, (user) => user.purchase, { nullable: true })
+    user: Users
 
     @OneToMany(() => Product, (product) => product.purchase, { nullable: true })
     product: Product

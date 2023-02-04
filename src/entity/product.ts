@@ -3,7 +3,7 @@ import { Purchase } from "./purchase"
 import { Category } from "./category"
 import { Delayed } from './delayed'
 import { Photo } from "./photo"
-import { User } from "./user"
+import { Users } from "./users"
 
 @Entity()
 export class Product {
@@ -17,8 +17,8 @@ export class Product {
     @ManyToOne(() => Category, (category) => category.product)
     category: Category
 
-    @ManyToOne(() => User, (user) => user.product)
-    user: User
+    @ManyToOne(() => Users, (user) => user.product)
+    user: Users
 
     @ManyToOne(() => Purchase, (purchase) => purchase.product)
     purchase: Purchase

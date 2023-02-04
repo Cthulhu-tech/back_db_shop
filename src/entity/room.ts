@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, Column } from 'typeorm'
 import { Message } from './message'
-import { User } from './user'
+import { Users } from './users'
 
 @Entity()
 export class Room {
@@ -11,8 +11,8 @@ export class Room {
     @Column('varchar', { length: 535, nullable: true })
     title: string
 
-    @ManyToOne(() => User, (user) => user.delayed)
-    user: User
+    @ManyToOne(() => Users, (user) => user.delayed)
+    user: Users
 
     @OneToMany(() => Message, (message) => message.room)
     message: Message[]

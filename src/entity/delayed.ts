@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm'
 import { Product } from './product'
-import { User } from './user'
+import { Users } from './users'
 
 @Entity()
 export class Delayed {
@@ -11,7 +11,7 @@ export class Delayed {
     @ManyToOne(() => Product, (product) => product.delayed)
     product: Product
 
-    @ManyToOne(() => User, (user) => user.delayed)
-    user: User
+    @ManyToOne(() => Users, (user) => user.delayed)
+    user: Users
 
 }
