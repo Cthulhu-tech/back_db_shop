@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Tree, TreeParent, TreeChildren } from 'typeorm'
-import { Product } from "./product"
+import { Entity, PrimaryGeneratedColumn, OneToMany, Tree, TreeParent, TreeChildren } from 'typeorm'
+import { Product } from './product'
 
 @Entity()
 @Tree("materialized-path")

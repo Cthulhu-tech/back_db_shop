@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, OneToOne } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm"
+import { Purchase } from "./purchase"
 import { Category } from "./category"
+import { Delayed } from './delayed'
 import { Photo } from "./photo"
 import { User } from "./user"
 
@@ -9,7 +11,7 @@ export class Product {
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @OneToMany(() => Photo, (photo) => photo.product)
+    @OneToMany(() => Photo, (photo) => photo.product, { nullable: true })
     photo: Photo[]
 
     @ManyToOne(() => Category, (category) => category.product)
@@ -18,19 +20,25 @@ export class Product {
     @ManyToOne(() => User, (user) => user.product)
     user: User
 
+    @ManyToOne(() => Purchase, (purchase) => purchase.product)
+    purchase: Purchase
+
+    @OneToMany(() => Delayed, (delayed) => delayed.product)
+    delayed: Delayed[]
+
     @Column('char', { length: 55 })
     title: string
 
-    @Column('varchar', { length: 535 })
+    @Column('varchar', { length: 535, nullable: true })
     description: string
 
     @Column('char', { length: 255 })
     city: string
 
-    @Column('char', { length: 255 })
+    @Column('char', { length: 255, nullable: true })
     street: string
 
-    @Column('boolean')
+    @Column('boolean', { nullable: true })
     delivery: boolean
 
 }

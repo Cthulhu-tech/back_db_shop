@@ -10,7 +10,7 @@ export class Photo {
     @ManyToOne(() => Product, (product) => product.photo)
     product: Product
 
-    @Column('varchar', { length: 535 })
+    @Column('varchar', { length: 535, nullable: true })
     description: string
 
     @Column('char', { length: 255 })
