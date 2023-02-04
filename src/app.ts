@@ -1,9 +1,11 @@
 import { Product } from './api/product/product'
 import { AppDataSource } from './data-source'
 import { JwtUtils } from './utils/jwt/jwt'
+import cookieParser from 'cookie-parser'
 import { User } from './api/user/user'
 import { Auth } from './api/auth/auth'
 import { Cart } from './api/cart/cart'
+import bodyParser from 'body-parser'
 import express from 'express'
 
 AppDataSource
@@ -11,6 +13,10 @@ AppDataSource
 .then(() => {
 
     const app = express()
+
+    app.use(cookieParser())
+    app.use(bodyParser.urlencoded({extended: true}))
+    
     const port = process.env.SERVER_PORT ?? '3000'
 
     // utils
@@ -26,14 +32,14 @@ AppDataSource
 
     // user api
     app.get('/users/:id', user.getInfo)
-    app.post('/users', jwt.checkBearer, user.create)
+    app.post('/users', user.create)
     app.put('/users/:id', jwt.checkBearer, user.update)
     app.delete('/users/:id', jwt.checkBearer, user.delete)
     //
 
     // authentication api
     app.post('/token/login', jwt.checkCookie, auth.login)
-    app.post('/token/lagout', jwt.checkCookie, auth.logout)
+    app.post('/token/logout', jwt.checkCookie, auth.logout)
     app.post('/token/refresh', jwt.checkCookie, auth.refresh)
     //
 
