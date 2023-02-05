@@ -17,6 +17,8 @@ export class User implements IUser {
         
         const { firstName, lastName, phone, email, city, password, img } = req.body as LoginBody
 
+        if(!firstName || !email || !password) return res.status(400).send({error: 'Invalid name or password or invalid email'})
+
         if (!firstName.trim() || !email.trim() || !password.trim()) return res.status(400).send({error: 'Invalid name or password or invalid email'})
 
         const user = await AppDataSource.getRepository(Users).createQueryBuilder("users").where("users.email = :email", { email }).getOne()

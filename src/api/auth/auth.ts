@@ -25,15 +25,17 @@ export class Auth implements IAuth {
 
             const { email, password } = req.body as LoginType
 
-            if(!email.trim() || !password.trim()) res.status(401).end(this.notFoundMessage)
-    
-            const user = await AppDataSource.getRepository(Users).createQueryBuilder("users").where("users.email = :email", { email }).getOne()
+            if(!email || !password) res.status(401).end({error:this.notFoundMessage})
 
-            if(!user) return res.status(401).end(this.notFoundMessage)
+            if(!email.trim() || !password.trim()) res.status(401).end({error:this.notFoundMessage})
     
+            const user = await AppDataSource.createQueryBuilder().select("users").from(Users, "users").where("users.email = :email", { email }).getOne()
+            
+            if(!user) return res.status(401).end({error:this.notFoundMessage})
+
             const match = await bcrypt.compare(password, user.password)
     
-            if(!match) return res.status(401).end(this.notFoundMessage)
+            if(!match) return res.status(401).end({error: this.notFoundMessage})
     
             const accessToken = this.createAccessToken(user.id, '15m')
             const refreshToken = this.createRefreshToken(user.id, '7d')
@@ -103,7 +105,7 @@ export class Auth implements IAuth {
 
     private createRefreshToken = (userId: number, time: string) => sign({ userId }, (process.env.SECRET_JWT_REFRESH_KEY), {expiresIn: time,});
 
-    private sendRefreshToken = (res: Response, token: string) => res.cookie('refresh_token', token, {httpOnly: true, path: '/', expires: new Date(Date.now() + 432000000)})
+    private sendRefreshToken = (res: Response, token: string) => res.cookie('refresh_token', token, {sameSite: 'lax', httpOnly: true, path: '/', expires: new Date(Date.now() + 432000000)})
 
     private sendAccessToken = (res: Response, accesstoken) => res.status(201).send({accesstoken})
 

@@ -15,7 +15,9 @@ AppDataSource
     const app = express()
 
     app.use(cookieParser())
-    app.use(bodyParser.urlencoded({extended: true}))
+    app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({ extended: false }))
+    app.use(require('cors')({origin: process.env.ORIGIN, credentials: true, optionSuccessStatus: 200, headers: "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization"}))
     
     const port = process.env.SERVER_PORT ?? '3000'
 
