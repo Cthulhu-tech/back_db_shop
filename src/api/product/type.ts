@@ -5,4 +5,5 @@ export interface IProduct {
     delete(req: Request, res: Response): void
     cretate(req: Request, res: Response): void
     getProduct(req: Request, res: Response): void
+    getProductInUser(req: Request, res: Response): void
 }

@@ -73,7 +73,7 @@ export class Auth implements IAuth {
 
     refresh = async (req: Request, res: Response) => {
 
-        const token = req?.cookies?.refresh_token
+        const token: string | undefined = req?.cookies?.refresh_token
 
         if(!token) return res.status(403).send({ error: this.tokenRequired })
 
@@ -85,18 +85,18 @@ export class Auth implements IAuth {
 
             const user = await AppDataSource.getRepository(Users).createQueryBuilder("users").where("users.id = :userId", { userId: payload.userId }).getOne()
 
-            if(user.token !== token) return res.status(500).send({ error: this.serverError })
+            if(!user || user.token !== token) return res.status(403).send({ error: this.tokenRequired })
 
             const accessToken = this.createAccessToken(payload.userId, '15m')
             const refreshToken = this.createRefreshToken(payload.userId, '7d')
 
-            await AppDataSource.createQueryBuilder().update(Users).set({ token: refreshToken }).where("id = :id and token = :token", { id: payload.userId, token }).execute()
+            await AppDataSource.createQueryBuilder().update(Users).set({ token: refreshToken }).where("id = :id", { id: payload.userId }).execute()
 
             await this.sendRefreshToken(res, refreshToken)
             await this.sendAccessToken(res, accessToken)
 
         }catch (err) {
-
+            
             return res.status(500).send({ error: this.serverError })
         }
     }
