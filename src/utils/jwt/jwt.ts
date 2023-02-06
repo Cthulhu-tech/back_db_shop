@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import { ChechAuthorization } from './auth'
 import { IJwtUtils } from './type'
 
 export class JwtUtils implements IJwtUtils {
@@ -8,11 +9,10 @@ export class JwtUtils implements IJwtUtils {
     }
 
     checkBearer(req: Request, res: Response, next: NextFunction) {
-        
-    }
-
-    checkCookie(req: Request, res: Response, next: NextFunction) {
-        next()
+        if(ChechAuthorization(req, res))
+            next()
+        else
+            res.status(403).send({ error: 'Need authorization'})
     }
 
 }
