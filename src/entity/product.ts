@@ -6,13 +6,13 @@ import { Photo } from "./photo"
 import { Users } from "./users"
 
 @Entity()
-export class Product {
+export class Products {
 
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @OneToMany(() => Photo, (photo) => photo.product, { nullable: true })
-    photo: Photo[]
+    @OneToMany((type) => Photo, (photo) => photo.product, { nullable: true })
+    photos: Photo[]
 
     @ManyToOne(() => Category, (category) => category.product)
     category: Category
@@ -40,5 +40,8 @@ export class Product {
 
     @Column('boolean', { nullable: true })
     delivery: boolean
+
+    @Column('int', { nullable: true })
+    price: number
 
 }

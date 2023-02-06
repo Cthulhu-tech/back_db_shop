@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, OneToMany, Tree, TreeParent, TreeChildren } from 'typeorm'
-import { Product } from './product'
+import { Products } from './product'
 
 @Entity()
 @Tree("materialized-path")
@@ -8,8 +8,8 @@ export class Category {
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @OneToMany(() => Product, (product) => product.category)
-    product: Product
+    @OneToMany(() => Products, (product) => product.category)
+    product: Products
 
     @TreeChildren()
     children: Category[]

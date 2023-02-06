@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm'
-import { Product } from './product'
+import { Products } from './product'
 import { Users } from './users'
 
 @Entity()
@@ -8,8 +8,8 @@ export class Delayed {
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @ManyToOne(() => Product, (product) => product.delayed)
-    product: Product
+    @ManyToOne(() => Products, (product) => product.delayed)
+    product: Products
 
     @ManyToOne(() => Users, (user) => user.delayed)
     user: Users

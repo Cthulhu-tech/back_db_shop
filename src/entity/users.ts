@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { Purchase } from "./purchase"
-import { Product } from "./product"
+import { Products } from "./product"
 import { Delayed } from './delayed'
 import { Message } from './message'
 import { Room } from './room'
@@ -11,8 +11,8 @@ export class Users {
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @OneToMany(() => Product, (product) => product.user)
-    product: Product[]
+    @OneToMany(() => Products, (product) => product.user)
+    product: Products[]
 
     @OneToMany(() => Purchase, (purchase) => purchase.user)
     purchase: Purchase[]
