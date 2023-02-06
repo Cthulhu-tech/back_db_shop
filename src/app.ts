@@ -14,6 +14,9 @@ AppDataSource
 
     const app = express()
 
+    //img
+    app.use('*/assets', express.static(__dirname + '/../public'))
+    console.log(__dirname + '/public')
     app.use(cookieParser())
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
@@ -40,13 +43,14 @@ AppDataSource
     //
 
     // authentication api
-    app.post('/token/login', jwt.checkCookie, auth.login)
-    app.post('/token/logout', jwt.checkCookie, auth.logout)
-    app.post('/token/refresh', jwt.checkCookie, auth.refresh)
+    app.post('/token/login', auth.login)
+    app.post('/token/logout', auth.logout)
+    app.post('/token/refresh', auth.refresh)
     //
 
 
     // product api
+    app.get('/product', jwt.checkBearer, product.getProductInUser)
     app.get('/product/:id', product.getProduct)
     app.post('/product', jwt.checkBearer, product.cretate)
     app.put('/product/:id', jwt.checkBearer, product.update)
@@ -54,7 +58,7 @@ AppDataSource
     //
 
     // cart api
-    app.get('/cart', jwt.checkCookie, cart.getCart)
+    app.get('/cart', cart.getCart)
     app.put('/cart/:id', jwt.checkBearer, cart.update)
     //
 
