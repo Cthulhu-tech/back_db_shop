@@ -1,5 +1,7 @@
+import { Categories } from './api/category/category'
 import { Product } from './api/product/product'
 import { AppDataSource } from './data-source'
+import fileUpload from 'express-fileupload'
 import { JwtUtils } from './utils/jwt/jwt'
 import cookieParser from 'cookie-parser'
 import { User } from './api/user/user'
@@ -16,12 +18,15 @@ AppDataSource
 
     //img
     app.use('*/assets', express.static(__dirname + '/../public'))
-    console.log(__dirname + '/public')
-    app.use(cookieParser())
-    app.use(bodyParser.json())
-    app.use(bodyParser.urlencoded({ extended: false }))
-    app.use(require('cors')({origin: process.env.ORIGIN, credentials: true, optionSuccessStatus: 200, headers: "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization"}))
+    //
     
+    app.use(fileUpload())
+    app.use(cookieParser())
+    app.use(bodyParser.json({limit: '30mb'}))
+    app.use(bodyParser.urlencoded({ extended: false, limit: '30mb' }))
+    app.use(require('cors')({origin: process.env.ORIGIN, credentials: true, optionSuccessStatus: 200, headers: "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization"}))
+    //
+
     const port = process.env.SERVER_PORT ?? '3000'
 
     // utils
@@ -33,6 +38,11 @@ AppDataSource
     const auth = new Auth()
     const user = new User()
     const product = new Product()
+    const categories = new Categories()
+    //
+
+    // category api
+    app.get('/categories', categories.getAllCategory)
     //
 
     // user api
@@ -47,7 +57,6 @@ AppDataSource
     app.post('/token/logout', auth.logout)
     app.post('/token/refresh', auth.refresh)
     //
-
 
     // product api
     app.get('/product', jwt.checkBearer, product.getProductInUser)
