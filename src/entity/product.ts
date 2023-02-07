@@ -38,8 +38,11 @@ export class Products {
     @Column('char', { length: 255, nullable: true })
     street: string
 
-    @Column('boolean', { nullable: true })
+    @Column('boolean', { nullable: true, default: false })
     delivery: boolean
+
+    @Column('boolean', { nullable: true, default: true })
+    active: boolean
 
     @Column('int', { nullable: true })
     price: number
