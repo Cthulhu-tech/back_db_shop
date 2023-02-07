@@ -37,12 +37,7 @@ export class User implements IUser {
 
         const hashPassword = await bcrypt.hash(password, 10)
 
-        await AppDataSource
-        .createQueryBuilder()
-        .insert()
-        .into(Users)
-        .values([{ firstName, lastName, phone, email, city, password: hashPassword, img }])
-        .execute()
+        await AppDataSource.createQueryBuilder().insert().into(Users).values([{ firstName, lastName, phone, email, city, password: hashPassword, img }]).execute()
 
         return res.status(201).send({ message: 'User created successfully'})
     }
