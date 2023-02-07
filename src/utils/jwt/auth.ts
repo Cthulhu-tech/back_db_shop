@@ -3,7 +3,6 @@ import { verify }  from 'jsonwebtoken'
 import { BearerType } from './type'
 
 export const ChechAuthorization = (req: Request, res: Response) => {
-  
     try{
 
       const authorization = req.headers['authorization']
