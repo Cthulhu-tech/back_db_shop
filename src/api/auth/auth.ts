@@ -81,22 +81,22 @@ export class Auth implements IAuth {
 
         try {
 
-            payload = verify(token, process.env.SECRET_JWT_REFRESH_KEY)
+            payload = await verify(token, process.env.SECRET_JWT_REFRESH_KEY)
 
-            const user = await AppDataSource.getRepository(Users).createQueryBuilder("users").where("users.id = :userId", { userId: payload.userId }).getOne()
+            const user = await AppDataSource.getRepository(Users).createQueryBuilder("users").where("users.id = :userId", { userId: payload.userId }).andWhere('users.token = :token', {token}).getOne()
 
             if(!user || user.token !== token) return res.status(403).send({ error: this.tokenRequired })
 
-            const accessToken = this.createAccessToken(payload.userId, '15m')
-            const refreshToken = this.createRefreshToken(payload.userId, '7d')
-
-            await AppDataSource.createQueryBuilder().update(Users).set({ token: refreshToken }).where("id = :id", { id: payload.userId }).execute()
+            const accessToken = await this.createAccessToken(payload.userId, '15m')
+            const refreshToken = await this.createRefreshToken(payload.userId, '7d')
 
             await this.sendRefreshToken(res, refreshToken)
             await this.sendAccessToken(res, accessToken)
 
+            await AppDataSource.createQueryBuilder().update(Users).set({ token: refreshToken }).where("id = :id", { id: payload.userId }).andWhere("token = :token", {token}).execute()
+
         }catch (err) {
-            
+            console.log(err)
             return res.status(500).send({ error: this.serverError })
         }
     }
@@ -105,8 +105,8 @@ export class Auth implements IAuth {
 
     private createRefreshToken = (userId: number, time: string) => sign({ userId }, (process.env.SECRET_JWT_REFRESH_KEY), {expiresIn: time,});
 
-    private sendRefreshToken = (res: Response, token: string) => res.cookie('refresh_token', token, {sameSite: 'lax', httpOnly: true, path: '/', expires: new Date(Date.now() + 432000000)})
+    private sendRefreshToken = async (res: Response, token: string) => await res.cookie('refresh_token', token, {sameSite: 'lax', httpOnly: true, path: '/', expires: new Date(Date.now() + 432000000)})
 
-    private sendAccessToken = (res: Response, accesstoken) => res.status(201).send({accesstoken})
+    private sendAccessToken = async (res: Response, accesstoken) => await res.status(201).send({accesstoken})
 
 }
