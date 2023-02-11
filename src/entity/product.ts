@@ -14,7 +14,7 @@ export class Products {
     @OneToMany((type) => Photo, (photo) => photo.product, { nullable: true })
     photos: Photo[]
 
-    @ManyToOne(() => Category, (category) => category.product)
+    @ManyToOne(() => Category, (category) => category.product, { nullable: true })
     category: Category
 
     @ManyToOne(() => Users, (user) => user.product)
@@ -44,7 +44,7 @@ export class Products {
     @Column('boolean', { nullable: true, default: true })
     active: boolean
 
-    @Column('int', { nullable: true })
+    @Column('int', { nullable: true, default: 0 })
     price: number
 
 }

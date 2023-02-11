@@ -61,6 +61,7 @@ AppDataSource
     // product api
     app.get('/product', jwt.checkBearer, product.getProductInUser)
     app.get('/product/:id', product.getProduct)
+    app.post('/delayed', jwt.checkBearer, product.delayed)
     app.post('/product', jwt.checkBearer, product.cretate)
     app.put('/product/:id', jwt.checkBearer, product.update)
     app.delete('/product/:id', jwt.checkBearer, product.delete)

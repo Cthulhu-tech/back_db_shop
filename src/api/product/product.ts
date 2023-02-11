@@ -1,5 +1,6 @@
 import { AppDataSource } from '../../data-source'
 import { Products } from '../../entity/product'
+import { Delayed } from '../../entity/delayed'
 import { Request, Response } from 'express'
 import { Photo } from '../../entity/photo'
 import ImageDataURI from 'image-data-uri'
@@ -19,13 +20,20 @@ export class Product implements IProduct {
 
     }
 
+    delayed = async (req: Request, res: Response) => {
+
+        const { product } = req.body
+
+        if(!product) return res.status(400).send({ error: 'Fill in all the fields'}) 
+
+        await AppDataSource.createQueryBuilder().insert().into(Delayed).values({ product, user: req.query.token[0]}).execute()
+    }
+
     cretate = async (req: Request, res: Response) => {
 
-        const {description, title, city, price , street, delivery, categoryId } = req.body
-
+        const { description, title, city, price , street, delivery, categoryId } = req.body
         if(!description && !title && !city) return res.status(400).send({ error: 'Fill in all the fields'})
-
-        const insert = await AppDataSource.createQueryBuilder().insert().into(Products).values([{ description, title, city, price: price ?? null, street: street ?? null, delivery: delivery ?? null, category: categoryId, user: req.query.token[0]}]).execute()
+        const insert = await AppDataSource.createQueryBuilder().insert().into(Products).values([{ description, title, city, price: isNaN(price) ? null : price, street: isNaN(street) ? null : street, delivery: isNaN(delivery) ? null : delivery, category: typeof(categoryId) === 'string' ? null : categoryId, user: req.query.token[0]}]).execute()
 
         for(let i = 0; i < req.body.images.length; i++){
             const path = await sign({ userId: req.query.token[0]}, process.env.SECRET_JWT_ACCESS_KEY)

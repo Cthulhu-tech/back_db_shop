@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
 import { Products } from './product'
 import { Users } from './users'
 

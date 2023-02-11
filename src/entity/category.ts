@@ -8,7 +8,7 @@ export class Category {
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @OneToMany(() => Products, (product) => product.category)
+    @OneToMany(() => Products, (product) => product.category, { nullable: true })
     product: Products
 
     @TreeChildren()
