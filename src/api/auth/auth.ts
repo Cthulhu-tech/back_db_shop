@@ -3,20 +3,14 @@ import { AppDataSource } from '../../data-source'
 import { sign, verify } from 'jsonwebtoken'
 import { Request, Response } from 'express'
 import { Users } from '../../entity/users'
+import { ErrorData } from '../error/error'
 import jwt_decode from 'jwt-decode'
 import bcrypt from 'bcrypt'
 
-export class Auth implements IAuth {
+export class Auth extends ErrorData implements IAuth {
 
-    tokenRequired: string
-    serverError: string
-    notFoundMessage: string
-
-    constructor() {
-
-        this.tokenRequired = "Token is required"
-        this.serverError = "Error, the server does not understand"
-        this.notFoundMessage = "Please enter a valid email or password"
+    constructor(){
+        super()
     }
 
     login = async (req: Request, res: Response) => {

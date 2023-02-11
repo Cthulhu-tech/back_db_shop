@@ -1,12 +1,13 @@
 import { AppDataSource } from '../../data-source'
 import { Request, Response } from 'express'
 import { Users } from '../../entity/users'
+import { ErrorData } from '../error/error'
 import { IUser, LoginBody } from './type'
 import bcrypt from 'bcrypt' 
 
-export class User implements IUser {
+export class User extends ErrorData implements IUser {
     constructor() {
-
+        super()
     }
 
     async getInfo(req: Request, res: Response) {
@@ -46,8 +47,25 @@ export class User implements IUser {
 
     }
 
-    update(req: Request, res: Response) {
+    async update(req: Request, res: Response) {
 
+        const { firstName, lastName, phone, email, city, password, img } = req.body as LoginBody
+
+        if (!firstName.trim() || !email.trim() || !password.trim()) return res.status(400).send({error: 'Invalid name or password or invalid email'})
+
+        try {
+
+            AppDataSource.getRepository(Users).createQueryBuilder()
+   .update()
+   .set({  })
+   .where(`channelId = :channelId`, { channelId: `<old channel id>`})
+   .execute();
+
+        }catch(err){
+
+        }
+
+        return res.status(202).send({ message: 'User update successfully'})
     }
 
 }

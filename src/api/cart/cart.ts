@@ -1,9 +1,11 @@
 import { Request, Response } from "express"
+import { ErrorData } from "../error/error"
 import { ICart } from "./type"
 
-export class Cart implements ICart {
+export class Cart extends ErrorData implements ICart {
+    
     constructor() {
-
+        super()
     }
 
     getCart(req: Request, res: Response) {
