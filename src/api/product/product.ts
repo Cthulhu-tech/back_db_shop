@@ -6,7 +6,8 @@ import { Photo } from '../../entity/photo'
 import { ErrorData } from '../error/error'
 import ImageDataURI from 'image-data-uri'
 import { sign } from 'jsonwebtoken'
-import { IProduct } from "./type"
+
+import { IProduct, Pagenation } from './type'
 
 export class Product extends ErrorData implements IProduct {
 
@@ -14,7 +15,7 @@ export class Product extends ErrorData implements IProduct {
         super()
     }
     
-    update(req: Request, res: Response) {
+    update = async (req: Request, res: Response) => {
         try{
 
             
@@ -24,7 +25,7 @@ export class Product extends ErrorData implements IProduct {
         }
     }
 
-    delete(req: Request, res: Response){
+    delete = async (req: Request, res: Response) => {
 
         try{
 
@@ -78,21 +79,36 @@ export class Product extends ErrorData implements IProduct {
         }
     }
 
-    getProduct(req: Request, res: Response){
+    getProduct = async (req: Request, res: Response) => {
 
+        try{
+
+            let { page, size } = req.query as Pagenation
+
+            if (!page || isNaN(+page)) page = '1'
+            if (!size || isNaN(+size)) size = '5'
+    
+            const limit = parseInt(size)
+
+            const products = await AppDataSource.getRepository(Products).createQueryBuilder("products").leftJoinAndSelect("products.photos", "photo").take(limit).skip(limit * +page).where('active = 1').orderBy('products.id').getMany()
+
+            if(products.length <= 0) return res.status(404).send({error: this.NotFound})
+
+            res.status(200).send({page: +page + +size, size, products})
+
+        }catch (err) {
+
+            res.status(500).send({error: this.serverError})
+        }
     }
 
-    async getProductInUser(req: Request, res: Response){
+    getProductInUser = async (req: Request, res: Response) => {
 
         try{
 
             const token = req.query.token as string[]
 
-            const products = await AppDataSource.getRepository(Products)
-            .createQueryBuilder("products")
-            .leftJoinAndSelect("products.photos", "photo")
-            .where("products.userId = :id", { id: token[0] })
-            .getMany()
+            const products = await AppDataSource.getRepository(Products).createQueryBuilder("products").leftJoinAndSelect("products.photos", "photo").where("products.userId = :id", { id: token[0] }).getMany()
     
             res.status(200).send(products)
             

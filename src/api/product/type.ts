@@ -8,3 +8,8 @@ export interface IProduct {
     getProduct(req: Request, res: Response): void
     getProductInUser(req: Request, res: Response): void
 }
+
+export type Pagenation = {
+    page: string
+    size: string
+}
