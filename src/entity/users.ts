@@ -50,6 +50,9 @@ export class Users {
     @Column('boolean', { default: false })
     verification: boolean
 
+    @Column('boolean', { default: true })
+    active: boolean
+
     @Column('char', { length: 255, nullable: true })
     token: string
 

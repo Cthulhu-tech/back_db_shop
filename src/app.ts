@@ -49,7 +49,7 @@ AppDataSource
     app.get('/users/:id', user.getInfo)
     app.post('/users', user.create)
     app.put('/users/:id', jwt.checkBearer, user.update)
-    app.delete('/users/:id', jwt.checkBearer, user.delete)
+    app.post('/users/:id/delete', jwt.checkBearer, user.delete)
     //
 
     // authentication api
@@ -59,6 +59,7 @@ AppDataSource
     //
 
     // product api
+    app.get('/products', product.getProduct)
     app.get('/product', jwt.checkBearer, product.getProductInUser)
     app.get('/product/:id', product.getProduct)
     app.post('/delayed', jwt.checkBearer, product.delayed)
