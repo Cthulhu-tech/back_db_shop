@@ -10,7 +10,7 @@ export class Categories extends ErrorData implements ICategory {
         super()
     }
 
-    async getCategoryId(req: Request, res: Response) {
+    getCategoryId = async(req: Request, res: Response) => {
 
         try{
 
@@ -28,7 +28,7 @@ export class Categories extends ErrorData implements ICategory {
         }
     }
 
-    async getAllCategory(req: Request, res: Response) {
+    getAllCategory = async(req: Request, res: Response) => {
 
         const category = await AppDataSource.getRepository(Category).createQueryBuilder("category").select('*').getRawMany()
         

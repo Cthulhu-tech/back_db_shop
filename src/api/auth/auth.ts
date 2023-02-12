@@ -13,7 +13,7 @@ export class Auth extends ErrorData implements IAuth {
         super()
     }
 
-    login = async (req: Request, res: Response) => {
+    login = async(req: Request, res: Response) => {
 
         try {
 
@@ -25,7 +25,7 @@ export class Auth extends ErrorData implements IAuth {
     
             const user = await AppDataSource.createQueryBuilder().select("users").from(Users, "users").where("users.email = :email", { email }).getOne()
             
-            if(!user) return res.status(401).end({error:this.notFoundMessage})
+            if(!user || !user.active) return res.status(401).end({error:this.notFoundMessage})
 
             const match = await bcrypt.compare(password, user.password)
     
@@ -45,7 +45,7 @@ export class Auth extends ErrorData implements IAuth {
         }
     }
 
-    async logout(req: Request, res: Response) {
+    logout = async(req: Request, res: Response) => {
 
         try {
 
@@ -79,7 +79,7 @@ export class Auth extends ErrorData implements IAuth {
 
             const user = await AppDataSource.getRepository(Users).createQueryBuilder("users").where("users.id = :userId", { userId: payload.userId }).andWhere('users.token = :token', {token}).getOne()
 
-            if(!user || user.token !== token) return res.status(403).send({ error: this.tokenRequired })
+            if(!user || user.token !== token || !user.active) return res.status(403).send({ error: this.tokenRequired })
 
             const accessToken = await this.createAccessToken(payload.userId, '15m')
             const refreshToken = await this.createRefreshToken(payload.userId, '7d')

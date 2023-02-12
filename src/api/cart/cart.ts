@@ -8,11 +8,11 @@ export class Cart extends ErrorData implements ICart {
         super()
     }
 
-    getCart(req: Request, res: Response) {
+    getCart = async(req: Request, res: Response) => {
 
     }
 
-    update(req: Request, res: Response) {
+    update = async(req: Request, res: Response) => {
 
     }
 }
