@@ -30,8 +30,8 @@ export class Categories extends ErrorData implements ICategory {
 
     getAllCategory = async(req: Request, res: Response) => {
 
-        const category = await AppDataSource.getRepository(Category).createQueryBuilder("category").select('*').getRawMany()
-        
+        const category = await AppDataSource.getRepository(Category).createQueryBuilder("category").getRawMany()
+
         return res.status(200).send({ category })
     }
 
