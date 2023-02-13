@@ -20,7 +20,7 @@ export class User extends ErrorData implements IUser {
 
         }catch (err) {
 
-            return res.status(404).send({error: 'Not Found'})
+            return res.status(404).send({error: this.NotFound})
         }
     }
 

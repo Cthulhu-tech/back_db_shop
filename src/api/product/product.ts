@@ -36,15 +36,54 @@ export class Product extends ErrorData implements IProduct {
         }
     }
 
+    delayedResponse  = async (req: Request, res: Response) => {
+
+        try {
+
+            const delayed = await AppDataSource.createQueryBuilder(Delayed, 'delayed').where('delayed.userId = :userId', {userId: req.query.token[0]}).getRawMany()
+
+            res.status(200).send({delayed})
+
+        }catch (err) {
+
+            res.status(500).send({error: this.serverError})
+        }
+    }
+
     delayed = async (req: Request, res: Response) => {
 
         try {
 
             const { product } = req.body
 
-            if(!product) return res.status(400).send({ error: 'Fill in all the fields'}) 
-    
-            await AppDataSource.createQueryBuilder().insert().into(Delayed).values({ product, user: req.query.token[0]}).execute()
+            if(!product) return res.status(400).send({ error: 'Fill in all the fields'})
+
+            if(product.length <= 0) {
+
+                await AppDataSource.createQueryBuilder().delete().from(Delayed).where("userId = :user", {user: req.query.token[0]}).execute()
+
+                return res.status(201).send({message: 'Products delayed update'})
+            }
+
+            const productSearch = await AppDataSource.createQueryBuilder(Delayed, 'delayed').where('delayed.userId = :userId', {userId: req.query.token[0]}).getRawMany()
+
+            const productParseId = productSearch.map(product => product.delayed_productId.toString())
+
+            if(productParseId.length <= 0 && product.length > 0) await product.forEach(async (productId) => await AppDataSource.createQueryBuilder().insert().into(Delayed).values([{product: productId, user: req.query.token[0]}]).execute())
+            else{
+
+                const notTarget = productParseId.filter(element => product.includes(element))
+
+                const insertElemenst = product.filter(element => !productParseId.includes(element))
+
+                const deleteElements = productParseId.filter(element => !product.includes(element) && !notTarget.includes(element))
+
+                deleteElements.length > 0 && deleteElements.map((productId) =>  AppDataSource.createQueryBuilder().delete().from(Delayed).where("productId = :productId and userId = :user", {productId, user: req.query.token[0]}).execute())
+
+                insertElemenst.length > 0 && await insertElemenst.forEach(async (productId) => await AppDataSource.createQueryBuilder().insert().into(Delayed).values([{product: productId, user: req.query.token[0]}]).execute())
+            }
+
+            res.status(201).send({message: 'Product delayed successfully'})
 
         }catch(err){
 
@@ -58,9 +97,11 @@ export class Product extends ErrorData implements IProduct {
 
             const { description, title, city, price , street, delivery, categoryId } = req.body
 
+            console.log(req.body)
+
             if(!description && !title && !city) return res.status(400).send({ error: 'Fill in all the fields'})
     
-            const insert = await AppDataSource.createQueryBuilder().insert().into(Products).values([{ description, title, city, price: isNaN(price) ? null : price, street: isNaN(street) ? null : street, delivery: isNaN(delivery) ? null : delivery, category: typeof(categoryId) === 'string' ? null : categoryId, user: req.query.token[0]}]).execute()
+            const insert = await AppDataSource.createQueryBuilder().insert().into(Products).values([{ description, title, city, price: isNaN(+price) ? null : price, street: isNaN(+street) ? street : null, delivery: isNaN(+delivery) ? null : delivery, category: isNaN(+categoryId) ? null : categoryId, user: req.query.token[0]}]).execute()
     
             for(let i = 0; i < req.body.images.length; i++){
     
@@ -79,6 +120,30 @@ export class Product extends ErrorData implements IProduct {
         }
     }
 
+    getProductById = async (req: Request, res: Response) => {
+
+        try{
+
+            const { id } = req.params
+
+            const product = await AppDataSource.getRepository(Products)
+            .createQueryBuilder("products")
+            .leftJoinAndSelect("products.photos", "photo")
+            .leftJoin("products.user", "user")
+            .addSelect(['user.id', 'user.firstName', 'user.lastName', 'user.phone'])
+            .leftJoinAndSelect("products.category", "category")
+            .where("products.id = :id", { id }).getMany()
+
+            if(product.length <= 0) return res.status(404).send({error: this.NotFound})
+
+            res.status(200).send({...product})
+
+        }catch(err) {
+            console.log(err)
+            res.status(500).send({error: this.serverError})
+        }
+    }
+
     getProduct = async (req: Request, res: Response) => {
 
         try{
@@ -90,8 +155,15 @@ export class Product extends ErrorData implements IProduct {
     
             const limit = parseInt(size)
 
-            const products = await AppDataSource.getRepository(Products).createQueryBuilder("products").leftJoinAndSelect("products.photos", "photo").take(limit).skip(limit * +page).where('active = 1').orderBy('products.id').getMany()
-
+            const products = await AppDataSource.getRepository(Products)
+            .createQueryBuilder("products")
+            .leftJoinAndSelect("products.photos", "photo")
+            .leftJoin("products.user", "user")
+            .addSelect(['user.id', 'user.firstName', 'user.lastName', 'user.phone'])
+            .leftJoinAndSelect("products.category", "category")
+            .take(limit).skip(limit * +page).where('products.active = 1')
+            .orderBy('products.id').getMany()
+            console.log(products)
             if(products.length <= 0) return res.status(404).send({error: this.NotFound})
 
             res.status(200).send({page: +page + +size, size, products})
