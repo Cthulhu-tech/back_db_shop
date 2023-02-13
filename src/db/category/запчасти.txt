@@ -1,0 +1,4 @@
+INSERT INTO `category` (`id`, `mpath`, `parentId`) VALUES (NULL, 'Запчасти', NULL);
+
+INSERT INTO `category` (`id`, `mpath`, `parentId`) VALUES (NULL, 'Тюнинг', '71'), (NULL, 'Аудио', '71'), (NULL, 'Аксессуары', '71'), (NULL, 'Багажники и Фаркопы', '71'), (NULL, 'Экипировка', '71'), (NULL, 'Масла', '71'), (NULL, 'Автохимия', NULL), (NULL, 'Противоугонка', NULL), (NULL, 'Другое', NULL), (NULL, 'Двигатели', NULL);
+UPDATE `category` SET `parentId` = '71' WHERE `category`.`id` = 78; UPDATE `category` SET `parentId` = '71' WHERE `category`.`id` = 79; UPDATE `category` SET `parentId` = '71' WHERE `category`.`id` = 80; UPDATE `category` SET `parentId` = '71' WHERE `category`.`id` = 81;

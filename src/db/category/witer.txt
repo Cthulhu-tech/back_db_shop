@@ -1,0 +1,2 @@
+INSERT INTO `category` (`id`, `mpath`, `parentId`) VALUES (NULL, 'Водный транспорт', NULL);
+
