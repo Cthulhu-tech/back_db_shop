@@ -61,11 +61,15 @@ AppDataSource
     // product api
     app.get('/products', product.getProduct)
     app.get('/product', jwt.checkBearer, product.getProductInUser)
-    app.get('/product/:id', product.getProduct)
-    app.post('/delayed', jwt.checkBearer, product.delayed)
+    app.get('/product/:id', product.getProductById)
     app.post('/product', jwt.checkBearer, product.cretate)
     app.put('/product/:id', jwt.checkBearer, product.update)
     app.delete('/product/:id', jwt.checkBearer, product.delete)
+    //
+
+    // delayed api
+    app.get('/delayed', jwt.checkBearer, product.delayedResponse)
+    app.post('/delayed', jwt.checkBearer, product.delayed)
     //
 
     // cart api
